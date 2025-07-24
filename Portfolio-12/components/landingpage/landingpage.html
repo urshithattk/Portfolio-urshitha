@@ -1,0 +1,247 @@
+<!-- Complete Landing Page with Sticky Notes, Clock, Weather, Taskbar, About Panel -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Landing Page</title>
+  <link rel="stylesheet" href="landingpage.css">
+  <script src="landingpage.js" defer></script>
+  <style>
+    .taskbar-icon {
+      transition: transform 0.2s ease, margin-bottom 0.2s ease;
+    }
+    .taskbar-icon:hover {
+      transform: scale(1.3);
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 🔄 Stylish Circular Loader -->
+<!-- Page Loader -->
+<div id="page-loader">
+  <span class="loader"></span>
+</div>
+
+
+  <div id="desktop">
+    <!-- Desktop Components -->
+  </div>
+
+  <!-- Taskbar -->
+  <div class="taskbar">
+    <div class="taskbar-left">
+      <span id="weather-temp">Loading...</span>
+      <span id="weather-city"></span>
+    </div>
+
+    <div class="taskbar-center" id="taskbar-center">
+      <div class="taskbar-icon">
+        <img src="../../assets/icons/windows.png" alt="Start" />
+      </div>
+      <a href="../folder/index.html" title="File Manager">
+      <div class="taskbar-icon">
+        <img src="../../assets/icons/folder.png" alt="File Manager" />
+      </div>
+      </a>
+    <a href="../calculator/cal.html" title="Calculator">
+      <div class="taskbar-icon">
+        <img src="../../assets/icons/calculator.png" alt="Calculator" />
+      </div>
+      </a>
+      <a href="https://llama-chatbot-4fkr.onrender.com" target="_blank" title="Personal ChatGPT">
+      <div class="taskbar-icon">
+        <img src="../../assets/icons/chatgpt.png" alt="ChatGPT" />
+      </div>
+      </a>
+<a href="../settings/settings.html" title="Settings">
+  <div class="taskbar-icon">
+    <img src="../../assets/icons/settings.png" alt="Settings" />
+  </div>
+</a>
+
+      <div class="taskbar-icon" id="add-note">
+        <img src="../../assets/icons/sticky.png" alt="Sticky Notes" title="Sticky Notes" />
+      </div>
+    </div>
+
+    <div class="taskbar-right">
+      <span id="clock">--:--</span>
+    </div>
+  </div>
+
+  <!-- Sticky Notes CSS -->
+  <style>
+    .sticky-note {
+      width: 250px;
+      min-height: 260px;
+      max-height: 400px;
+      background-color: #fff9c4;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      padding: 16px;
+      position: absolute;
+      top: 120px;
+      left: 120px;
+      color: #000;
+      cursor: move;
+      user-select: none;
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    .note-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .note-heading {
+      margin: 0;
+      font-size: 18px;
+      font-weight: bold;
+      user-select: none;
+    }
+    .note-content {
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 24px;
+      text-align: justify;
+      outline: none;
+      min-height: 140px;
+      background-image: repeating-linear-gradient(to bottom, #000 0px, #000 1px, transparent 1px, transparent 24px);
+      background-size: 100% 24px;
+      background-repeat: repeat-y;
+      padding-right: 4px;
+      color: black;
+    }
+    .color-options {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+      margin-bottom: 30px;
+      user-select: none;
+    }
+    .color-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #333;
+      cursor: pointer;
+    }
+    .note-controls {
+      display: flex;
+      gap: 6px;
+    }
+    .note-btn {
+      background: transparent;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: #000;
+      font-weight: bold;
+    }
+  </style>
+
+  <!-- Sticky Notes JS -->
+  <script>
+
+
+  // 🧊 Hide loader on full page load
+  window.addEventListener("load", () => {
+    const loader = document.getElementById("page-loader");
+    if (loader) loader.style.display = "none";
+  });
+
+  // 💬 Animate "Loading..." text
+  const loadingText = document.getElementById("animated-text");
+  const dots = ["", ".", "..", "..."];
+  let i = 0;
+  setInterval(() => {
+    if (loadingText) {
+      loadingText.textContent = "Loading" + dots[i % dots.length];
+      i++;
+    }
+  }, 500);
+
+    const minimizedNotes = [];
+
+    function createStickyNote() {
+      const note = document.createElement('div');
+      note.className = 'sticky-note';
+      note.innerHTML = `
+        <div class="note-top">
+          <h3 class="note-heading">To do:</h3>
+          <div class="note-controls">
+            <button class="note-btn minimize">_</button>
+            <button class="note-btn close">×</button>
+          </div>
+        </div>
+        <div class="note-content" contenteditable="true">• </div>
+        <div class="color-options">
+          <span class="color-dot" data-color="#b3e5fc"></span>
+          <span class="color-dot" data-color="#c8e6c9"></span>
+          <span class="color-dot" data-color="#fff9c4"></span>
+          <span class="color-dot" data-color="#ffe0b2"></span>
+        </div>
+      `;
+      document.getElementById('desktop').appendChild(note);
+
+      const colorDots = note.querySelectorAll('.color-dot');
+      colorDots.forEach(dot => {
+        dot.style.backgroundColor = dot.dataset.color;
+        dot.addEventListener('click', () => {
+          note.style.backgroundColor = dot.dataset.color;
+        });
+      });
+
+      const closeBtn = note.querySelector('.close');
+      closeBtn.addEventListener('click', () => note.remove());
+
+      const minimizeBtn = note.querySelector('.minimize');
+      minimizeBtn.addEventListener('click', () => {
+        note.style.display = 'none';
+        minimizedNotes.push(note);
+      });
+
+      let isDragging = false, offsetX = 0, offsetY = 0;
+      note.addEventListener('mousedown', e => {
+        isDragging = true;
+        offsetX = e.clientX - note.offsetLeft;
+        offsetY = e.clientY - note.offsetTop;
+        note.style.cursor = 'grabbing';
+      });
+      document.addEventListener('mousemove', e => {
+        if (isDragging) {
+          note.style.left = `${e.clientX - offsetX}px`;
+          note.style.top = `${e.clientY - offsetY}px`;
+        }
+      });
+      document.addEventListener('mouseup', () => {
+        isDragging = false;
+        note.style.cursor = 'move';
+      });
+    }
+
+    document.getElementById('add-note').addEventListener('click', () => {
+      if (minimizedNotes.length > 0) {
+        const note = minimizedNotes.pop();
+        note.style.display = 'block';
+      } else {
+        createStickyNote();
+      }
+    });
+  </script>
+
+  <script>
+  window.addEventListener("load", function () {
+    const loader = document.getElementById("page-loader");
+    loader.style.opacity = "0";
+    loader.style.transition = "opacity 0.5s ease";
+    setTimeout(() => loader.style.display = "none", 500);
+  });
+</script>
+
+</body>
+</html>

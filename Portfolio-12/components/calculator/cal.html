@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scientific Calculator Fullscreen</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            orangeBtn: '#f97316'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- TensorFlow + MediaPipe HandPose -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.20.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose@0.0.7/dist/handpose.min.js"></script>
+
+
+<style>
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    margin: 12px;
+    padding: 10px;
+    border-radius: 12px;
+    background-color: transparent;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .icon-btn.active {
+    background-color: #f97316; /* Orange when active */
+  }
+  .calc-btn {
+    @apply rounded-lg text-xl p-4 transition-all;
+  }
+</style>
+
+</head>
+<body id="body" class="bg-gray-900 text-white w-screen h-screen overflow-hidden transition-colors duration-300 relative">
+
+<!-- Right Column Icons -->
+<div class="fixed right-0 top-0 h-full w-[50px] flex flex-col justify-center items-center bg-transparent z-50">
+  <img id="icon-theme" src="../../assets/icons/bulb.png" alt="Theme" 
+       class="icon-btn" title="Toggle Theme" onclick="toggleFeature('theme')" />
+  
+  <img id="icon-memory" src="../../assets/icons/memory.png" alt="MR" 
+       class="icon-btn" title="Toggle Memory Recall" onclick="toggleFeature('memory')" />
+  
+  <img id="icon-keyboard" src="../../assets/icons/keyboard.png" alt="Keyboard" 
+       class="icon-btn" title="Toggle Virtual Keyboard" onclick="toggleFeature('keyboard')" />
+</div>
+
+  <!-- Main Calculator Area -->
+  <div class="flex flex-col h-full w-full px-8 py-6 box-border">
+    
+    <!-- Display -->
+    <input id="display" type="text" class="w-full text-right text-3xl p-4 mb-6 rounded-xl bg-white/10 text-white dark:text-black dark:bg-white shadow-inner" />
+
+    <!-- Keypad -->
+    <div class="grid grid-cols-5 gap-3 flex-grow text-lg">
+      <!-- Row 1 -->
+      <button class="calc-btn" onclick="clearDisplay()">AC</button>
+      <button class="calc-btn" onclick="deleteLast()">DEL</button>
+      <button class="calc-btn" onclick="append('π')">π</button>
+      <button class="calc-btn" onclick="append('e')">e</button>
+      <button class="calc-btn" onclick="append('/')">÷</button>
+
+      <!-- Row 2 -->
+      <button class="calc-btn" onclick="append('sin(')">sin</button>
+      <button class="calc-btn" onclick="append('cos(')">cos</button>
+      <button class="calc-btn" onclick="append('tan(')">tan</button>
+      <button class="calc-btn" onclick="append('^')">xʸ</button>
+      <button class="calc-btn" onclick="append('*')">×</button>
+
+      <!-- Row 3 -->
+      <button class="calc-btn" onclick="append('7')">7</button>
+      <button class="calc-btn" onclick="append('8')">8</button>
+      <button class="calc-btn" onclick="append('9')">9</button>
+      <button class="calc-btn" onclick="append('√(')">√</button>
+      <button class="calc-btn" onclick="append('-')">−</button>
+
+      <!-- Row 4 -->
+      <button class="calc-btn" onclick="append('4')">4</button>
+      <button class="calc-btn" onclick="append('5')">5</button>
+      <button class="calc-btn" onclick="append('6')">6</button>
+      <button class="calc-btn" onclick="append('log(')">log</button>
+      <button class="calc-btn" onclick="append('+')">+</button>
+
+      <!-- Row 5 -->
+      <button class="calc-btn" onclick="append('1')">1</button>
+      <button class="calc-btn" onclick="append('2')">2</button>
+      <button class="calc-btn" onclick="append('3')">3</button>
+      <button class="calc-btn" onclick="append('%')">%</button>
+      <button class="bg-orangeBtn text-white font-bold rounded-lg" onclick="calculate()">=</button>
+
+      <!-- Row 6 -->
+      <button class="calc-btn col-span-2" onclick="append('0')">0</button>
+      <button class="calc-btn" onclick="append('.')">.</button>
+      <button class="calc-btn" onclick="append('(')">(</button>
+      <button class="calc-btn" onclick="append(')')">)</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById('display');
+    const body = document.getElementById('body');
+
+    function append(char) {
+      if (char === 'π') char = Math.PI;
+      if (char === 'e') char = Math.E;
+      display.value += char;
+    }
+
+    function clearDisplay() {
+      display.value = '';
+    }
+
+    function deleteLast() {
+      display.value = display.value.slice(0, -1);
+    }
+
+    function calculate() {
+      try {
+        let expression = display.value
+          .replace(/√\(/g, 'Math.sqrt(')
+          .replace(/sin\(/g, 'Math.sin(')
+          .replace(/cos\(/g, 'Math.cos(')
+          .replace(/tan\(/g, 'Math.tan(')
+          .replace(/log\(/g, 'Math.log10(')
+          .replace(/\^/g, '**');
+        const result = eval(expression);
+        display.value = result;
+      } catch {
+        display.value = 'Error';
+      }
+    }
+
+function toggleTheme() {
+  const isDark = body.classList.contains('bg-gray-900');
+  
+  // Toggle body bg/text
+  body.classList.toggle('bg-gray-900');
+  body.classList.toggle('text-white');
+  body.classList.toggle('bg-white');
+  body.classList.toggle('text-black');
+
+  // Toggle button styles
+  document.querySelectorAll('.calc-btn').forEach(btn => {
+    if (isDark) {
+      // Now switching to Light Mode
+      btn.classList.remove('bg-black', 'text-white');
+      btn.classList.add('bg-white', 'text-black');
+    } else {
+      // Back to Dark Mode
+      btn.classList.remove('bg-white', 'text-black');
+      btn.classList.add('bg-black', 'text-white');
+    }
+  });
+
+  // Display input styling
+  display.classList.toggle('bg-white/10');
+  display.classList.toggle('text-white');
+  display.classList.toggle('bg-white');
+  display.classList.toggle('text-black');
+}
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') calculate();
+      else if (e.key === 'Backspace') deleteLast();
+      else if (e.key === 'Escape') clearDisplay();
+      else if (!isNaN(e.key) || "+-*/().".includes(e.key)) append(e.key);
+    });
+
+    
+  let memoryValue = null;
+  let features = {
+    theme: false,
+    memory: false,
+    keyboard: false,
+  };
+
+  function toggleFeature(type) {
+    features[type] = !features[type];
+    const icon = document.getElementById(`icon-${type}`);
+    icon.classList.toggle('active', features[type]);
+
+    switch (type) {
+      case 'theme':
+        toggleTheme(); break;
+      case 'memory':
+        if (features.memory) {
+          memoryValue = display.value;
+          alert(`Memory stored: ${memoryValue}`);
+        } else {
+          memoryValue = null;
+          alert('Memory cleared');
+        }
+        break;
+      case 'keyboard':
+        toggleKeyboardPanel();
+        requestCameraAccess();
+        break;
+    }
+  }
+
+  function toggleKeyboardPanel() {
+    let existing = document.getElementById('virtualKeyboard');
+    if (existing) {
+      existing.remove();
+      return;
+    }
+
+    const keyboard = document.createElement('div');
+    keyboard.id = 'virtualKeyboard';
+    keyboard.className = 'absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white text-black rounded-lg p-4 shadow-lg flex flex-wrap gap-2 max-w-xl z-50';
+
+    const keys = '1234567890+-*/().'.split('');
+    keys.forEach(k => {
+      const btn = document.createElement('button');
+      btn.textContent = k;
+      btn.className = 'bg-gray-200 px-4 py-2 rounded hover:bg-gray-300';
+      btn.onclick = () => append(k);
+      keyboard.appendChild(btn);
+    });
+
+    const enterBtn = document.createElement('button');
+    enterBtn.textContent = '=';
+    enterBtn.className = 'bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600';
+    enterBtn.onclick = calculate;
+    keyboard.appendChild(enterBtn);
+
+    document.body.appendChild(keyboard);
+  }
+
+  function requestCameraAccess() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        console.log('Camera access granted');
+        stream.getTracks().forEach(track => track.stop()); // Just check permission
+      })
+      .catch(err => {
+        console.warn('Camera access denied or not available:', err);
+      });
+  }
+
+let model, webcamStream;
+
+async function initHandTracking() {
+  const video = document.getElementById('webcam');
+  video.classList.remove("hidden");
+
+  // Ask for webcam access
+  try {
+    webcamStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = webcamStream;
+  } catch (err) {
+    console.error('Webcam access denied:', err);
+    return;
+  }
+
+  // Load handpose model
+  model = await handpose.load();
+  console.log("✅ Handpose model loaded");
+
+  // Start detection loop
+  detectHands(video);
+}
+
+async function detectHands(video) {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  document.body.appendChild(canvas);
+  canvas.style.display = "none";
+
+  async function loop() {
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const predictions = await model.estimateHands(video);
+
+    if (predictions.length > 0) {
+      const indexFinger = predictions[0].landmarks[8]; // index fingertip
+      const [x, y, z] = indexFinger;
+
+      console.log(`👉 Index Finger Tip: x=${Math.round(x)}, y=${Math.round(y)}`);
+      // Here in Phase 2: Match (x, y) to button grid
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  loop();
+}
+
+  </script>
+
+  <style>
+    
+  .icon-btn {
+    width: 24px;
+    height: 24px;
+    margin: 6px;
+    padding: 8px;
+    border-radius: 10px;
+    background-color: transparent;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .icon-btn.active {
+    background-color: #f97316; /* Orange when active */
+  }
+
+    .calc-btn {
+      @apply rounded-lg text-xl p-4 text-white bg-black hover:bg-gray-800 transition-all;
+    }
+    .bg-white .calc-btn {
+      @apply text-black bg-white hover:bg-gray-200;
+    }
+  </style>
+
+  <!-- Webcam Preview -->
+<video id="webcam" autoplay playsinline class="fixed bottom-4 right-4 w-40 h-32 rounded-md shadow-lg z-50 border-2 border-orange-400 hidden"></video>
+
+</body>
+</html>

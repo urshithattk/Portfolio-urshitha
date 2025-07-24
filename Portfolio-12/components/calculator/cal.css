@@ -1,0 +1,24 @@
+
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    margin: 12px;
+    padding: 10px;
+    border-radius: 12px;
+    background-color: transparent;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .icon-btn.active {
+    background-color: #f97316;
+  }
+
+  .calc-btn {
+    @apply rounded-lg text-xl p-4 transition-all;
+  }
+
+  .hovered-btn {
+    outline: 3px solid orange;
+    outline-offset: 1px;
+  }

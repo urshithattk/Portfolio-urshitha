@@ -1,0 +1,182 @@
+/* Page loader full screen */
+#page-loader {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Loader animation */
+.loader {
+  transform: rotateZ(45deg);
+  perspective: 1000px;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  color: white;
+  position: relative;
+}
+.loader:before,
+.loader:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: inherit;
+  height: inherit;
+  border-radius: 50%;
+  transform: rotateX(70deg);
+  animation: 1s spin linear infinite;
+}
+.loader:after {
+  color: #FF3D00;
+  transform: rotateY(70deg);
+  animation-delay: .4s;
+}
+
+@keyframes spin {
+  0%, 100% { box-shadow: .2em 0px 0 0px currentcolor; }
+  12%     { box-shadow: .2em .2em 0 0 currentcolor; }
+  25%     { box-shadow: 0 .2em 0 0px currentcolor; }
+  37%     { box-shadow: -.2em .2em 0 0 currentcolor; }
+  50%     { box-shadow: -.2em 0 0 0 currentcolor; }
+  62%     { box-shadow: -.2em -.2em 0 0 currentcolor; }
+  75%     { box-shadow: 0px -.2em 0 0 currentcolor; }
+  87%     { box-shadow: .2em -.2em 0 0 currentcolor; }
+}
+
+/* ✨ White Blinking Loading Text */
+.loader-text {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+  animation: blink 1.2s infinite ease-in-out;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+
+
+body {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  background: url('../../assets/images/wp2.jpg') no-repeat center center/cover;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#profile-card {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  padding: 20px 30px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  z-index: 10;
+}
+
+#profile-card img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+}
+
+#profile-card h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+}
+
+#profile-card p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  font-style: italic;
+  color: #f0f0f0;
+}
+
+
+.taskbar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 1000;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.taskbar-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  color: white;
+  font-size: 13px;
+  padding-left: 10px;
+  line-height: 1.2;
+}
+
+.taskbar-center {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.taskbar-icon {
+  width: 40px;
+  height: 40px;
+  /* padding: 2px; */
+  border-radius: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.taskbar-icon img {
+  width: 24px;
+  height: 24px;
+}
+
+.taskbar-icon:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.taskbar-right {
+  color: white;
+  font-size: 14px;
+  padding-right: 35px;
+  white-space: nowrap;
+  display: flex;
+  justify-content: flex-end;
+  min-width: 100px;
+}

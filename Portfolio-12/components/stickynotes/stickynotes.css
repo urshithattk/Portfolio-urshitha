@@ -1,0 +1,51 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: transparent;
+}
+
+.sticky-note {
+  width: 250px;
+  min-height: 300px;
+  background-color: #fff9c4;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  position: absolute;
+  top: 80px;
+  left: 80px;
+  color: #000;
+  cursor: move;
+  user-select: none;
+}
+
+.sticky-note h3 {
+  margin-top: 0;
+  font-size: 20px;
+  text-align: left;
+}
+
+.note-content {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: justify;
+  outline: none;
+  min-height: 180px;
+}
+
+.color-options {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.color-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #555;
+  cursor: pointer;
+}

@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>File Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #0e0e0e;
+  color: #f0f0f0;
+  scroll-behavior: smooth;
+}
+
+/* 🌐 Navbar */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  padding: 15px 40px;
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #222;
+}
+.close-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+  color: #ff4c4c;
+}
+
+.navbar nav {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.navbar .logo {
+  font-size: 1.5rem;
+  color: #00adb5;
+  font-weight: bold;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #ccc;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links li a:hover {
+  color: #00adb5;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    gap: 15px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Section Wrapper */
+.section {
+  padding: 40px 20px 60px; /* reduced top padding */
+}
+
+/* Headings */
+h2,
+.section-title {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  margin-top: 0;
+  color: #fff;
+  text-align: center;
+  position: relative;
+}
+
+h2::after,
+.section-title::after {
+  content: "";
+  display: block;
+  margin: 12px auto 0;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(to right, transparent, #00adb5, transparent);
+  border-radius: 2px;
+  box-shadow: 0 0 10px #00adb5, 0 0 20px #00adb5;
+}
+
+/* ---------- Project & Experience Cards ---------- */
+.project-card {
+  max-width: 1000px;
+  margin: 40px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border-radius: 15px;
+  overflow: hidden;
+  min-height: 260px;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  opacity: 0;
+}
+
+.project-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 25px rgba(0, 173, 181, 0.35);
+}
+
+.project-card.from-left {
+  transform: translateX(-120px);
+  transition: all 0.8s ease;
+}
+
+.project-card.from-right {
+  transform: translateX(120px);
+  transition: all 0.8s ease;
+}
+
+.project-card.visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.project-card.reverse {
+  flex-direction: row-reverse;
+}
+
+.project-image,
+.project-text {
+  width: 50%;
+  height: 100%;
+}
+
+.project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Timeline */
+.timeline {
+  position: absolute;
+  top: 10%;
+  left: 15px;
+  width: 20px;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.timeline .line {
+  width: 4px;
+  background: #00adb5;
+  flex-grow: 1;
+  margin: 5px 0;
+  animation: growLine 1s ease-out;
+}
+
+.timeline .dot {
+  width: 10px;
+  height: 10px;
+  background: #00adb5;
+  border-radius: 50%;
+}
+
+.timeline .dates {
+  position: absolute;
+  left: 25px;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+@keyframes growLine {
+  from {
+    height: 0;
+  }
+  to {
+    height: 100%;
+  }
+}
+
+.project-text {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.project-text h3 {
+  font-size: 1.8rem;
+  color: #00adb5;
+  margin-bottom: 15px;
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.project-text p {
+  font-size: 1rem;
+  color: #ccc;
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.project-card.visible .project-text h3 {
+  animation: slideDown 0.6s forwards;
+}
+
+.project-card.visible .project-text p {
+  animation: slideDown 0.6s 0.2s forwards;
+}
+
+@keyframes slideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.know-more {
+  margin-top: 10px;
+  color: #00adb5;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.know-more:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Certifications ---------- */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border-radius: 15px;
+  overflow: hidden;
+  transform: translateY(40px);
+  opacity: 0;
+  transition: all 0.6s ease;
+}
+
+.card.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 0 25px rgba(0, 173, 181, 0.4);
+}
+
+.card img {
+  width: 100%;
+  height: 180px; /* or whatever fixed height you prefer */
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.card-content {
+  padding: 20px;
+  text-align: left;
+}
+
+.card-content h3 {
+  color: #00adb5;
+  margin-bottom: 10px;
+}
+
+.card-content p {
+  font-size: 0.95rem;
+  color: #ccc;
+}
+
+/* ---------- Resume ---------- */
+.resume-card {
+  max-width: 400px;
+  margin: auto;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border-radius: 15px;
+  overflow: hidden;
+  transform: translateY(40px);
+  opacity: 0;
+  transition: all 0.6s ease;
+}
+
+.resume-card.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.resume-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 1px solid #222;
+}
+
+.resume-card .card-content {
+  padding: 20px;
+  text-align: left;
+}
+
+.resume-card iframe {
+  width: 100%;
+  height: 250px;
+  border-radius: 10px;
+  margin-top: 10px;
+  border: none;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1f1f1f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* Responsive Layouts */
+@media (max-width: 768px) {
+  .project-card,
+  .project-card.reverse {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .project-image,
+  .project-text {
+    width: 100%;
+    height: auto;
+  }
+
+  .project-image img {
+    height: 250px;
+  }
+
+  .timeline {
+    left: 10px;
+  }
+
+  .timeline .dates {
+    left: 20px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.download-btn {
+  justify-content: center;
+  display: flex;
+  /* display: inline-block; */
+  
+  padding: 12px 24px;
+  background: #00adb5;
+  color: #fff;
+  backdrop-filter: blur(10px);
+  border: 1px solid #00adb5;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.download-btn:hover {
+  background:00adb5;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+  </style>
+</head>
+<body>
+<!-- 🌐 NAVIGATION BAR -->
+<header class="navbar">
+  <nav>
+    <button class="close-btn" onclick="window.location.href='../landingpage/landingpage.html';">✖</button>
+    <ul class="nav-links">
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#certifications">Certifications</a></li>
+      <li><a href="#resume">Resume</a></li>
+    </ul>
+  </nav>
+</header>
+
+  <!-- Paste inside <body> of your portfolio HTML -->
+
+<!-- 🧊 PROJECTS -->
+<section class="section" id="projects">
+  <h2 class="section-title">Projects</h2>
+
+  <div class="project-card from-left">
+    <div class="project-image"><img src="project1.jpg" alt="Offline HR Chatbot"></div>
+    <div class="project-text">
+      <h3>Offline HR Chatbot using LLaMA</h3>
+      <p>Built a self-hosted AI chatbot using LLaMA 2 model with LangChain and Gradio. Enabled offline conversation with HR documents for private organizations. Used Python + Transformers.</p>
+      <a href="#" class="know-more">Know more &gt;</a>
+    </div>
+  </div>
+
+  <div class="project-card from-right reverse">
+    <div class="project-image"><img src="project2.png" alt="Contouring Web App"></div>
+    <div class="project-text">
+      <h3>Contouring Web App for BARC</h3>
+      <p>Developed frontend for an electron beam contouring application used in nuclear labs. Focused on UI design, responsiveness and backend integration.</p>
+      <a href="#" class="know-more">Know more &gt;</a>
+    </div>
+  </div>
+
+  <div class="project-card from-left">
+    <div class="project-image"><img src="project3.png" alt="Internship Portal"></div>
+    <div class="project-text">
+      <h3>Internship Management Portal</h3>
+      <p>Created a PHP & MySQL-based portal to handle student internship requests, with file uploads, approvals and user role access.</p>
+      <a href="#" class="know-more">Know more &gt;</a>
+    </div>
+  </div>
+
+  <div class="project-card from-right reverse">
+    <div class="project-image"><img src="project4.png" alt="Voxify Speech Translation"></div>
+    <div class="project-text">
+      <h3>Voxify: Speech-to-Speech Translator</h3>
+      <p>Developed a speech translation system using speech recognition, translation APIs and text-to-speech synthesis with an intuitive frontend.</p>
+      <a href="#" class="know-more">Know more &gt;</a>
+    </div>
+  </div>
+
+  <div class="project-card from-left">
+    <div class="project-image"><img src="project5.jpg" alt="Spa & Salon Website"></div>
+    <div class="project-text">
+      <h3>High-Throughput Request Gateway with Circuit Breaker</h3>
+      <p>A lightweight, efficient API Gateway built using FastAPI that routes requests to backend microservices with round-robin load balancing and a built-in circuit breaker mechanism for fault tolerance.</p>
+      <a href="gateway.pdf" class="know-more">Know more &gt;</a>
+    </div>
+  </div>
+</section>
+
+<!-- 🛠 EXPERIENCE -->
+<section class="section" id="experience">
+  <h2 class="section-title">Experience</h2>
+
+  <div class="project-card from-left">
+    <div class="project-image" style="position: relative;">
+      <img src="npcil.png" alt="NPCIL AI/ML Intern">
+      <div class="timeline">
+        <span class="dot top"></span>
+        <span class="line"></span>
+        <span class="dot bottom"></span>
+        <div class="dates">
+          <p>9/12/2024</p>
+          <p>31/03/25</p>
+        </div>
+      </div>
+    </div>
+    <div class="project-text">
+      <h3>AI/ML Intern</h3>
+      <p><strong>Company:</strong> Nuclear Power Corporation of India (NPCIL)</p>
+      <p><strong>Designation:</strong> AI/ML Intern</p>
+      <p><strong>Duration:</strong> Dec 2024 - Mar 2025 (4 months)</p>
+      <p><strong>Project:</strong> Developed an offline HR chatbot for secure, air-gapped environments using LLaMA 3.2-1B for fast CPU-based inference. Built a RAG pipeline with embedding caching and fine-tuned on 100+ HR documents to improve accuracy. Integrated the bot into a LAN-accessible web app.</p>
+      <p><strong>Certificate:</strong> <a class="know-more" href="#">View Certificate &gt;</a></p>
+    </div>
+  </div>
+
+  <div class="project-card from-right reverse">
+    <div class="project-image" style="position: relative;">
+      <img src="barc.png" alt="BARC Web Dev">
+      <div class="timeline">
+        <span class="dot top"></span>
+        <span class="line"></span>
+        <span class="dot bottom"></span>
+        <div class="dates">
+          <p>05/24</p>
+          <p>07/24</p>
+        </div>
+      </div>
+    </div>
+    <div class="project-text">
+      <h3>Web Dev Intern</h3>
+      <p><strong>Company:</strong> Bhabha Atomic Research Centre (BARC)</p>
+      <p><strong>Designation:</strong> Frontend Intern</p>
+      <p><strong>Duration:</strong> May 2024 - July 2024 (2 months)</p>
+      <p><strong>Project:</strong> Designed and implemented frontend UI for e-beam contouring web application using HTML, CSS, JS.</p>
+      <p><strong>Certificate:</strong> <a class="know-more" href="#">View Certificate &gt;</a></p>
+    </div>
+  </div>
+
+  <div class="project-card from-left">
+    <div class="project-image" style="position: relative;">
+      <img src="pce.png" alt="Pillai Backend">
+      <div class="timeline">
+        <span class="dot top"></span>
+        <span class="line"></span>
+        <span class="dot bottom"></span>
+        <div class="dates">
+          <p>05/23</p>
+          <p>08/23</p>
+        </div>
+      </div>
+    </div>
+    <div class="project-text">
+      <h3>Backend Developer</h3>
+      <p><strong>Company:</strong> Pillai College of Engineering</p>
+      <p><strong>Designation:</strong> Backend Developer</p>
+      <p><strong>Duration:</strong> May 2023 - Aug 2023 (3 months)</p>
+      <p><strong>Project:</strong> Built backend APIs for student login & data sync in internship portal using Node.js and Express.</p>
+      <p><strong>Certificate:</strong> <a class="know-more" href="#">View Certificate &gt;</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- 📜 CERTIFICATIONS -->
+<section class="section" id="certifications">
+  <h2 class="section-title">Certifications</h2>
+  <div class="card-grid">
+    <div class="card">
+      <!-- <img src="cert1.jpg" alt="Python Cert"> -->
+      <div class="card-content">
+        <h3>Python Data Structures</h3>
+        <p>University of Michigan, Coursera</p>
+        <p><strong>Certificate:</strong> <a class="know-more" href="py_datastructures.pdf">View Certificate &gt;</a></p>
+
+      </div>
+    </div>
+    <div class="card">
+      <!-- <img src="cert2.jpg" alt="Prog Cert"> -->
+      <div class="card-content">
+        <h3>Programming for Everybody(Beginning with Python)</h3>
+        <p>University of Michigan, Coursera</p>
+        <p><strong>Certificate:</strong> <a class="know-more" href="Python_for_everybody.pdf">View Certificate &gt;</a></p>
+
+      </div>
+    </div>
+    <div class="card">
+      <!-- <img src="cert3.jpg" alt="Java Cert"> -->
+      <div class="card-content">
+        <h3>Java for Beginners</h3>
+        <p>Udemy</p>
+        <p><strong>Certificate:</strong> <a class="know-more" href="java.pdf">View Certificate &gt;</a></p>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 📄 RESUME -->
+<section class="section" id="resume">
+  <h2 class="section-title">Resume</h2>
+  <div class="resume-card">
+    <div class="card-content">
+      <h3>My Resume</h3>
+      <p>Preview or download the full PDF resume below:</p>
+      <iframe src="Urshitha-Resume.pdf"></iframe>
+<a href="assets/Urshitha_Resume.pdf" download class="download-btn">
+  Download Resume
+</a>
+    </div>
+  </div>
+</section>
+
+  <!-- 🎬 SCROLL OBSERVER -->
+  <script>
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.project-card, .card, .resume-card').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>

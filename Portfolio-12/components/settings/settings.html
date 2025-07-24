@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Settings</title>
+  <link rel="stylesheet" href="settings.css" />
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="window-title">⚙️ Settings</div>
+    <div class="window-controls">
+      <div class="close-btn-wrapper">
+        <img src="../../assets/icons/close.png" alt="Close" id="closeBtn" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Panel -->
+  <div id="settingsPanel" class="main-container">
+    <div class="left-column">
+      <!-- Profile Card -->
+      <div class="card profile-card">
+        <img src="../../assets/images/profile.jpg" alt="Profile" class="profile-pic" />
+        <div class="info">
+          <h3>T T K Urshitha Sai</h3>
+          <p>urshithasaittk@gmail.com</p>
+          <!-- <p>mobNo</p> -->
+        </div>
+      </div>
+
+      <!-- Brightness + Theme -->
+      <div class="card brightness-theme-card">
+        <label>Brightness</label>
+        <input type="range" id="brightnessRange" min="50" max="150" value="100" />
+
+        <div class="color-mode-toggle-row">
+          <label for="themeToggle">Color Mode</label>
+          <div class="theme-toggle">
+            <input type="checkbox" id="themeToggle" />
+            <label class="switch" for="themeToggle">
+              <span class="slider"></span>
+              <span class="icon sun">☀️</span>
+              <span class="icon moon">🌙</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fullscreen -->
+      <div class="card fullscreen-card">
+        <button id="fullscreenBtn">Full Screen</button>
+      </div>
+    </div>
+
+    <!-- News Section -->
+    <div class="card news-card">
+      <h3>Today's Trending News</h3>
+      <div class="news-grid" id="newsGrid">
+        <!-- Live news headlines go here -->
+      </div>
+    </div>
+  </div>
+
+  <script src="settings.js"></script>
+</body>
+</html>

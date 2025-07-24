@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Urshitha-Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body.loader-bg {
+      background: url('./assets/images/wp2.jpg') no-repeat center center/cover;
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+.glass-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(18px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+
+    .loader {
+      width: 25px;
+      height: 50px;
+      display: grid;
+      color: #fff;
+      background:
+        linear-gradient(currentColor 0 0) top/100% 2px,
+        radial-gradient(farthest-side at top, #0000 calc(100% - 2px), currentColor calc(100% - 1px), #0000) top,
+        linear-gradient(currentColor 0 0) bottom/100% 2px,
+        radial-gradient(farthest-side at bottom, #0000 calc(100% - 2px), currentColor calc(100% - 1px), #0000) bottom;
+      background-size: 100% 1px, 100% 50%;
+      background-repeat: no-repeat;
+      animation: l18 4s infinite linear;
+      margin: auto;
+    }
+
+    .loader::before,
+    .loader::after {
+      content: "";
+      grid-area: 1/1;
+      background: inherit;
+      border: inherit;
+      animation: inherit;
+    }
+    .loader::after {
+      animation-duration: 2s;
+    }
+
+    @keyframes l18 {
+      100% {
+        transform: rotate(1turn);
+      }
+    }
+
+    .loader-text {
+      margin-top: 25px;
+      font-size: 20px;
+      font-weight: 700;
+      color: silver;
+      font-family: 'Segoe UI', sans-serif;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+      animation: fadeLang 1.8s infinite ease-in-out;
+    }
+
+    .input-section,
+    .welcome-message {
+      display: none;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+    }
+
+    .welcome-message h2 {
+      color: white;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="loader-bg">
+  <div class="page" id="page-loader">
+    <div class="glass-container" id="glass-container">
+
+      <!-- ✨ Bouncing loader -->
+      <div class="loader" id="loader"></div>
+      <div class="loader-text" id="welcome-text">Welcome</div>
+
+      <!-- ✍️ Input section -->
+      <div class="input-section" id="input-section">
+        <h2>Enter your name</h2>
+        <input type="text" id="nameInput" placeholder="Your name here..." />
+      </div>
+
+      <!-- 👋 Welcome message -->
+      <div class="welcome-message" id="welcome-message">
+        <h2 id="welcome-text-final"></h2>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const welcomeTexts = [
+      "Welcome", "Bienvenue", "Willkommen", "ようこそ", "Bienvenido", "स्वागत है",
+      "환영합니다", "Добро пожаловать", "Bem-vindo", "欢迎", "வணக்கம்", "స్వాగతం", "مرحبا"
+    ];
+    const welcomeEl = document.getElementById("welcome-text");
+    let index = 0;
+
+    const loader = document.getElementById("loader");
+    const inputSection = document.getElementById("input-section");
+
+    // Change welcome text
+    const rotateWelcome = setInterval(() => {
+      welcomeEl.textContent = welcomeTexts[index % welcomeTexts.length];
+      index++;
+    }, 1300);
+
+    // Show input after 4s
+    setTimeout(() => {
+      loader.style.display = "none";
+      welcomeEl.style.display = "none";
+      inputSection.style.display = "block";
+      clearInterval(rotateWelcome);
+    }, 4000);
+
+    // Name input enter handler
+    document.getElementById('nameInput').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        const name = e.target.value.trim();
+        if (name) {
+          inputSection.style.display = 'none';
+          const welcomeText = document.getElementById('welcome-text-final');
+          welcomeText.textContent = `Welcome, ${name}!`;
+          document.getElementById('welcome-message').style.display = 'block';
+
+          setTimeout(() => {
+            window.location.href = './components/landingpage/landingpage.html';
+          }, 2000);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
